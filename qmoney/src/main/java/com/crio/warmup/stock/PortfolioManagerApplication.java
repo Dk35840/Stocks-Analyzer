@@ -183,7 +183,7 @@ public class PortfolioManagerApplication {
     for(Candle c:al)
       sym.add(c.getSymbol());
 
-
+System.out.println(al+" "+sym);
     return sym;
     
  }
@@ -224,6 +224,11 @@ public String getSymbol() {
 
 public void setSymbol(String symbol) {
   this.symbol = symbol;
+}
+
+@Override
+public String toString() {
+  return "Candle [close=" + close + ", date=" + date + ", symbol=" + symbol + "]";
 }
 }
 
