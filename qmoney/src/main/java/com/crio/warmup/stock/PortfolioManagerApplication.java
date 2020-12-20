@@ -163,7 +163,7 @@ public class PortfolioManagerApplication {
     //System.out.print(filename);
 
     PortfolioTrade[] allvalue=getObjectMapper().readValue(Filename, PortfolioTrade[].class);
-    List<String> list= new ArrayList<>();
+    
     
     for(PortfolioTrade pf:allvalue){
      String url ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?endDate="+date+"+&startDate="+date+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=close";
@@ -176,7 +176,7 @@ public class PortfolioManagerApplication {
       
     }
 
-  Collections.sort(al,(a,b)->a.getClose()-b.getClose());
+   Collections.sort(al,(a,b)->Double.compare(a.getClose(),b.getClose()));
    List<String> sym= new ArrayList<>();
 
 
@@ -193,7 +193,7 @@ public class PortfolioManagerApplication {
 
 class Candle{
   private String date;
-private int  close;
+private Double  close;
 private String symbol;
 
 public String getDate() {
@@ -204,15 +204,15 @@ public void setDate(String date) {
   this.date = date;
 }
 
-public int getClose() {
+public Double getClose() {
   return close;
 }
 
-public void setClose(int close) {
+public void setClose(Double close) {
   this.close = close;
 }
 
-public Candle(String date, int close, String symbol) {
+public Candle(String date, Double close, String symbol) {
   this.date = date;
   this.close = close;
   this.symbol = symbol;
