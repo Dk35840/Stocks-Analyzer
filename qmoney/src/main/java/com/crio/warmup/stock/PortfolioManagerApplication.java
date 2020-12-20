@@ -40,6 +40,7 @@ public class PortfolioManagerApplication {
   //  2. You can use "./gradlew build" to check if your code builds successfully.
 
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
+    
     File Filename=resolveFileFromResources(args[0]);
     //System.out.print(filename);
 
