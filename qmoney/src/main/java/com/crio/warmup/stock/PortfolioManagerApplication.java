@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.http.HttpHeaders;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -24,6 +25,12 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.ThreadContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -159,11 +166,57 @@ public class PortfolioManagerApplication {
   //    and deserialize the results in List<Candle>
 
   public static List<String> mainReadQuotes(String[] args) throws IOException, URISyntaxException {
+    RestTemplate restTemplate = new RestTemplate();
+    ArrayList<String> al= new ArrayList<>();
 
-    return Arrays.asList(new String[]{"MSFT", "AAPL", "GOOGL"});
+    File Filename=resolveFileFromResources(args[0]);
+    String date=args[1];
+    //System.out.print(filename);
+
+    PortfolioTrade[] allvalue=getObjectMapper().readValue(Filename, PortfolioTrade[].class);
+    List<String> list= new ArrayList<>();
+    
+    for(PortfolioTrade pf:allvalue){
+     String url ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?endDate="+date+"+&startDate="+date+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=close";
+    System.out.println(url);
+     ResponseEntity<Candle[]> response = restTemplate.getForEntity(url,Candle[].class);
+     Candle[] employees = response.getBody();
+     for(Candle c:employees)
+      al.add(c.getClose());
+
+      
+    }
+
+   
+    Collections.sort(al);
+   
+
+    return al;
     
  }
 
 
 }
+
+class Candle{
+  private String date;
+private String close;
+
+public String getDate() {
+  return date;
+}
+
+public void setDate(String date) {
+  this.date = date;
+}
+
+public String getClose() {
+  return close;
+}
+
+public void setClose(String close) {
+  this.close = close;
+}
+}
+
 
