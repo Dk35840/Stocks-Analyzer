@@ -167,7 +167,7 @@ public class PortfolioManagerApplication {
 
   public static List<String> mainReadQuotes(String[] args) throws IOException, URISyntaxException {
     RestTemplate restTemplate = new RestTemplate();
-    ArrayList<String> al= new ArrayList<>();
+    ArrayList<Candle> al= new ArrayList<>();
 
     File Filename=resolveFileFromResources(args[0]);
     String date=args[1];
@@ -178,20 +178,24 @@ public class PortfolioManagerApplication {
     
     for(PortfolioTrade pf:allvalue){
      String url ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?endDate="+date+"+&startDate="+date+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=close";
-    System.out.println(url);
+    //System.out.println(url);
      ResponseEntity<Candle[]> response = restTemplate.getForEntity(url,Candle[].class);
      Candle[] employees = response.getBody();
-     for(Candle c:employees)
-      al.add(c.getClose());
-
+     for(Candle c:employees){
+       al.add(new Candle(c.getDate(),c.getClose(),pf.getSymbol())); 
+     }
       
     }
 
-   
-    Collections.sort(al);
-   
+  Collections.sort(al,(a,b)->a.getClose()-b.getClose());
+   List<String> sym= new ArrayList<>();
 
-    return al;
+
+    for(Candle c:al)
+      sym.add(c.getSymbol());
+
+
+    return sym;
     
  }
 
@@ -200,7 +204,8 @@ public class PortfolioManagerApplication {
 
 class Candle{
   private String date;
-private String close;
+private int  close;
+private String symbol;
 
 public String getDate() {
   return date;
@@ -210,12 +215,26 @@ public void setDate(String date) {
   this.date = date;
 }
 
-public String getClose() {
+public int getClose() {
   return close;
 }
 
-public void setClose(String close) {
+public void setClose(int close) {
   this.close = close;
+}
+
+public Candle(String date, int close, String symbol) {
+  this.date = date;
+  this.close = close;
+  this.symbol = symbol;
+}
+
+public String getSymbol() {
+  return symbol;
+}
+
+public void setSymbol(String symbol) {
+  this.symbol = symbol;
 }
 }
 
