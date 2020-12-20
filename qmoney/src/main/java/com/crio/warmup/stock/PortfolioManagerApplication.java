@@ -140,10 +140,30 @@ public class PortfolioManagerApplication {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
 
-    printJsonObject(mainReadFile(args));
+    printJsonObject(mainReadQuotes(args));
 
 
 
   }
+
+
+  // TODO: CRIO_TASK_MODULE_REST_API
+  //  Find out the closing price of each stock on the end_date and return the list
+  //  of all symbols in ascending order by its close value on end date.
+
+  // Note:
+  // 1. You may have to register on Tiingo to get the api_token.
+  // 2. Look at args parameter and the module instructions carefully.
+  // 2. You can copy relevant code from #mainReadFile to parse the Json.
+  // 3. Use RestTemplate#getForObject in order to call the API,
+  //    and deserialize the results in List<Candle>
+
+  public static List<String> mainReadQuotes(String[] args) throws IOException, URISyntaxException {
+
+    return Arrays.asList(new String[]{"MSFT", "AAPL", "GOOGL"});
+    
+ }
+
+
 }
 
