@@ -1,7 +1,6 @@
 
 package com.crio.warmup.stock;
 
-
 import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
@@ -14,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,10 +40,17 @@ public class PortfolioManagerApplication {
   //  2. You can use "./gradlew build" to check if your code builds successfully.
 
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
+    File Filename=resolveFileFromResources(args[0]);
+    //System.out.print(filename);
 
-     return Collections.emptyList();
+    PortfolioTrade[] allvalue=getObjectMapper().readValue(Filename, PortfolioTrade[].class);
+    List<String> list= new ArrayList<>();
+    
+    for(PortfolioTrade pf:allvalue){
+      list.add(pf.getSymbol());
+    }
+      return list;
   }
-
 
   // Note:
   // 1. You may need to copy relevant code from #mainReadQuotes to parse the Json.
