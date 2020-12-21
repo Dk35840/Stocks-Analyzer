@@ -166,13 +166,17 @@ public class PortfolioManagerApplication {
     
     
     for(PortfolioTrade pf:allvalue){
-     String url ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?endDate="+date+"+&startDate="+date+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=close";
+     String url ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?endDate="+date+"+&startDate="+pf.getPurchaseDate()+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=close";
     //System.out.println(url);
      ResponseEntity<Candle[]> response = restTemplate.getForEntity(url,Candle[].class);
      Candle[] employees = response.getBody();
-     for(Candle c:employees){
+
+     if(employees.length==0) 
+      continue;
+
+      Candle c=employees[employees.length-1];
        al.add(new Candle(c.getDate(),c.getClose(),pf.getSymbol())); 
-     }
+     
       
     }
 
@@ -211,6 +215,8 @@ public Double getClose() {
 public void setClose(Double close) {
   this.close = close;
 }
+
+Candle(){}
 
 public Candle(String date, Double close, String symbol) {
   this.date = date;
