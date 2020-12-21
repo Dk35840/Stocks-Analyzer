@@ -1,7 +1,6 @@
 
 package com.crio.warmup.stock;
 
-
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -159,22 +158,27 @@ public class PortfolioManagerApplication {
     ArrayList<Candle> al= new ArrayList<>();
 
     File Filename=resolveFileFromResources(args[0]);
-    String date=args[1];
+    String enddate=args[1];
     //System.out.print(filename);
 
     PortfolioTrade[] allvalue=getObjectMapper().readValue(Filename, PortfolioTrade[].class);
     
     
     for(PortfolioTrade pf:allvalue){
-     String url ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?endDate="+date+"+&startDate="+pf.getPurchaseDate()+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=close";
+
+      LocalDate date = LocalDate.parse(enddate);
+
+      if(!pf.getPurchaseDate().isBefore(date)) throw new RuntimeException();
+
+     String url ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?endDate="+enddate+"+&startDate="+pf.getPurchaseDate()+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=close";
     //System.out.println(url);
      ResponseEntity<Candle[]> response = restTemplate.getForEntity(url,Candle[].class);
      Candle[] employees = response.getBody();
 
      if(employees.length==0) 
-      continue;
+       continue;
 
-      Candle c=employees[employees.length-1];
+       Candle c=employees[employees.length-1];
        al.add(new Candle(c.getDate(),c.getClose(),pf.getSymbol())); 
      
       
@@ -187,7 +191,6 @@ public class PortfolioManagerApplication {
     for(Candle c:al)
       sym.add(c.getSymbol());
 
-System.out.println(al+" "+sym);
     return sym;
     
  }
