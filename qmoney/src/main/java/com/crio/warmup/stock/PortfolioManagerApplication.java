@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -154,6 +155,7 @@ public class PortfolioManagerApplication {
   // Remember to confirm that you are getting same results for annualized returns as in Module 3.
   public static List<AnnualizedReturn> mainCalculateSingleReturn(String[] args)
       throws IOException, URISyntaxException {
+
      return Collections.emptyList();
   }
 
@@ -172,9 +174,10 @@ public class PortfolioManagerApplication {
   public static AnnualizedReturn calculateAnnualizedReturns(LocalDate endDate,
       PortfolioTrade trade, Double buyPrice, Double sellPrice) {
 
-        int year=endDate.getYear()-trade.getPurchaseDate().getYear();
+       Period period=Period.between(trade.getPurchaseDate(), endDate);
+
         double totalReturns=(sellPrice-buyPrice)*1.0/buyPrice;
-        double annualized_returns=Math.pow(1+totalReturns, 1.0/year)-1;
+        double annualized_returns=Math.pow(1+totalReturns, 1.0*365/period.getDays())-1;
 
       return new AnnualizedReturn(trade.getSymbol(), annualized_returns, totalReturns);
   }
