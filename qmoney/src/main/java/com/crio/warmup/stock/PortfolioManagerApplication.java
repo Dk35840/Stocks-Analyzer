@@ -140,9 +140,9 @@ public class PortfolioManagerApplication {
   public static List<String> debugOutputs() {
 
      String valueOfArgument0 = "trades.json";
-     String resultOfResolveFilePathArgs0 = "";
-     String toStringOfObjectMapper = "";
-     String functionNameFromTestFileInStackTrace = "";
+     String resultOfResolveFilePathArgs0 = "trades.json";
+     String toStringOfObjectMapper = "ObjectMapper";
+     String functionNameFromTestFileInStackTrace = "mainReadFile";
      String lineNumberFromTestFileInStackTrace = "";
 
 
