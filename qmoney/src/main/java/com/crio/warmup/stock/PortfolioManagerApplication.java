@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -151,13 +152,53 @@ public class PortfolioManagerApplication {
   }
 
 
+// TODO: CRIO_TASK_MODULE_CALCULATIONS
+  //  Now that you have the list of PortfolioTrade and their data, calculate annualized returns
+  //  for the stocks provided in the Json.
+  //  Use the function you just wrote #calculateAnnualizedReturns.
+  //  Return the list of AnnualizedReturns sorted by annualizedReturns in descending order.
+
   // Note:
-  // Remember to confirm that you are getting same results for annualized returns as in Module 3.
+  // 1. You may need to copy relevant code from #mainReadQuotes to parse the Json.
+  // 2. Remember to get the latest quotes from Tiingo API.
+
   public static List<AnnualizedReturn> mainCalculateSingleReturn(String[] args)
       throws IOException, URISyntaxException {
 
-     return Collections.emptyList();
+        RestTemplate restTemplate = new RestTemplate();
+        
+        File Filename=resolveFileFromResources(args[0]);
+        LocalDate endDate = LocalDate.parse(args[1]);
+    
+        PortfolioTrade[] allvalue=getObjectMapper().readValue(Filename, PortfolioTrade[].class);
+
+        List<AnnualizedReturn> list= new ArrayList<>();
+        
+        for(PortfolioTrade pf:allvalue){
+          
+          //
+          String urlSell ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?endDate="+endDate+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=close";
+          //System.out.println(urlSell);
+           ResponseEntity<Candle[]> responseSell = restTemplate.getForEntity(urlSell,Candle[].class);
+           Candle[] sellPriceDetails = responseSell.getBody();
+           double sellPrice=sellPriceDetails[sellPriceDetails.length-1].getClose();
+
+           String urlBuy ="https://api.tiingo.com/tiingo/daily/"+pf.getSymbol()+"/prices?startDate="+pf.getPurchaseDate()+"+&token=a064066c97f5c60827346ef971c029e28a396c07&columns=open";
+           //System.out.println(url);
+            ResponseEntity<Candle[]> responseBuy = restTemplate.getForEntity(urlBuy,Candle[].class);
+            Candle[] buyPriceDetails = responseBuy.getBody();
+            double buyPrice=buyPriceDetails[0].getOpen();
+          AnnualizedReturn ar=calculateAnnualizedReturns(endDate,pf,buyPrice ,sellPrice);
+           list.add(ar);
+        }
+
+        Collections.sort(list,(d1,d2)->Double.compare(d2.getAnnualizedReturn(), d1.getAnnualizedReturn()));
+
+          return list;
+
+    
   }
+
 
   // TODO: CRIO_TASK_MODULE_CALCULATIONS
   //  Return the populated list of AnnualizedReturn for all stocks.
@@ -174,10 +215,17 @@ public class PortfolioManagerApplication {
   public static AnnualizedReturn calculateAnnualizedReturns(LocalDate endDate,
       PortfolioTrade trade, Double buyPrice, Double sellPrice) {
 
+        if(endDate.isBefore(trade.getPurchaseDate())) throw new NullPointerException();
+        
        Period period=Period.between(trade.getPurchaseDate(), endDate);
-
+      
         double totalReturns=(sellPrice-buyPrice)*1.0/buyPrice;
-        double annualized_returns=Math.pow(1+totalReturns, 1.0*365/period.getDays())-1;
+     
+        long noOfDaysBetween = ChronoUnit.DAYS.between(trade.getPurchaseDate(), endDate);
+
+        double annualized_returns=Math.pow(1+totalReturns, 1.0*365/(noOfDaysBetween))-1;
+
+        //System.out.println("Get Days"+trade.getSymbol()+"period"+  daysSpend+":"+noOfDaysBetween+";"+trade.getPurchaseDate()+""+endDate);
 
       return new AnnualizedReturn(trade.getSymbol(), annualized_returns, totalReturns);
   }
@@ -264,6 +312,7 @@ public class PortfolioManagerApplication {
 class Candle{
   private String date;
 private Double  close;
+private Double open;
 private String symbol;
 
 public String getDate() {
@@ -284,6 +333,13 @@ public void setClose(Double close) {
 
 Candle(){}
 
+public Candle(String date, Double close,Double Open, String symbol) {
+  this.date = date;
+  this.close = close;
+  this.symbol = symbol;
+  this.open=open;
+}
+
 public Candle(String date, Double close, String symbol) {
   this.date = date;
   this.close = close;
@@ -301,6 +357,14 @@ public void setSymbol(String symbol) {
 @Override
 public String toString() {
   return "Candle [close=" + close + ", date=" + date + ", symbol=" + symbol + "]";
+}
+
+public Double getOpen() {
+  return open;
+}
+
+public void setOpen(Double open) {
+  this.open = open;
 }
 
 
