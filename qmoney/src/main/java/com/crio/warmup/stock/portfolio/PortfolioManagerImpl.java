@@ -8,6 +8,7 @@ import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -32,13 +33,22 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
 
   RestTemplate restTemplate;
+  StockQuotesService stockQuoteService;
 
   // Caution: Do not delete or modify the constructor, or else your build will break!
   // This is absolutely necessary for backward compatibility
+  protected PortfolioManagerImpl(RestTemplate restTemplate,StockQuotesService stockQuoteService) {
+    this.restTemplate = restTemplate;
+    this.stockQuoteService=stockQuoteService;
+  }
   protected PortfolioManagerImpl(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
+ 
   }
-
+  protected PortfolioManagerImpl(StockQuotesService stockQuoteService) {
+    this.stockQuoteService=stockQuoteService;
+ 
+  }
  public PortfolioManagerImpl(){}
 
   //TODO: CRIO_TASK_MODULE_REFACTOR
@@ -57,7 +67,10 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
 
 
-  private Comparator<AnnualizedReturn> getComparator() {
+  public PortfolioManagerImpl(String provider, RestTemplate restTemplate2) {
+
+  }
+private Comparator<AnnualizedReturn> getComparator() {
     return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
   }
 
@@ -136,4 +149,12 @@ public class PortfolioManagerImpl implements PortfolioManager {
   return new AnnualizedReturn(trade.getSymbol(), annualized_returns, totalReturns);
    
   }
+
+
+  // ¶TODO: CRIO_TASK_MODULE_ADDITIONAL_REFACTOR
+  //  Modify the function #getStockQuote and start delegating to calls to
+  //  stockQuoteService provided via newly added constructor of the class.
+  //  You also have a liberty to completely get rid of that function itself, however, make sure
+  //  that you do not delete the #getStockQuote function.
+
 }

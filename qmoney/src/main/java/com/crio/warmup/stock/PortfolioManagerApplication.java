@@ -1,7 +1,6 @@
 
 package com.crio.warmup.stock;
 
-
 import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.dto.TotalReturnsDto;
@@ -9,6 +8,7 @@ import com.crio.warmup.stock.log.UncaughtExceptionHandler;
 import com.crio.warmup.stock.portfolio.PortfolioManager;
 import com.crio.warmup.stock.portfolio.PortfolioManagerFactory;
 import com.crio.warmup.stock.portfolio.PortfolioManagerImpl;
+import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
@@ -44,7 +44,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 public class PortfolioManagerApplication {
-
+  StockQuotesService stockQuoteService;
   // TODO: CRIO_TASK_MODULE_JSON_PARSING
   //  Read the json file provided in the argument[0]. The file will be available in the classpath.
   //    1. Use #resolveFileFromResources to get actual file from classpath.
@@ -219,30 +219,6 @@ public class PortfolioManagerApplication {
 
       return new AnnualizedReturn(trade.getSymbol(), annualized_returns, totalReturns);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // TODO: CRIO_TASK_MODULE_REFACTOR
   //  Once you are done with the implementation inside PortfolioManagerImpl and
