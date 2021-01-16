@@ -1,6 +1,8 @@
 
 package com.crio.warmup.stock.quotes;
 
+
+
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -16,11 +18,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 public class AlphavantageService implements StockQuotesService {
 
+  @Autowired
   private RestTemplate restTemplate;
   
   @Override
@@ -30,25 +36,46 @@ public class AlphavantageService implements StockQuotesService {
 
     String url=buildUri(symbol);
 
-    AlphavantageCandle[] stocks =restTemplate.getForObject(url, AlphavantageCandle[].class);
+    
+    AlphavantageDailyResponse stocks =restTemplate.getForObject(url, AlphavantageDailyResponse.class);
+   
+    for(Map.Entry<LocalDate, AlphavantageCandle> ac: stocks.getCandles().entrySet()){
+
+      if(ac.getKey().isAfter(from) && ac.getKey().isBefore(to) || ac.getKey().isEqual(to)){
+          ac.getValue().setDate(ac.getKey());
+        li.add(0,ac.getValue());
+      }
+          
+   }
+
+   System.out.print(li);
+ 
+   
+       return li;
+    }
+
+    
 
     List<Candle> li= new ArrayList<>();
     
-    for(int i=li.size()-1;i>-0;i--){
+  
+  /*
+    for(int i=stocks.length-1;i>=0;i--){
 
-      Candle ac=li.get(i);
-      if(ac.getDate().isAfter(from) && ac.getDate().isBefore(to))
-       li.add(ac);
-    }
+      Candle ac=stocks[i];
+      
+     
+*/
+  
 
-    return li;
+  
 
-  }
+
   protected String buildUri(String symbol) {
 
-    String token="a064066c97f5c60827346ef971c029e28a396c07";
+    String apiKey="demo";
     StringBuilder sb= new StringBuilder("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=");
-    sb.append(symbol).append("&outputsize=full&apikey=demo");
+    sb.append(symbol).append("&outputsize=full&apikey=apiKey");
 
             return sb.toString();
   }

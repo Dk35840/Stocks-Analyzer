@@ -1,7 +1,9 @@
 package com.crio.warmup.stock.dto;
+
 import java.time.LocalDate;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 // TODO: CRIO_TASK_MODULE_ADDITIONAL_REFACTOR
@@ -11,11 +13,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 // Reference - https:www.baeldung.com/jackson-ignore-properties-on-serialization
 //Reference - https:www.baeldung.com/jackson-name-of-property
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AlphavantageCandle implements Candle {
   @JsonProperty("1. open")
   private Double open;
+  @JsonProperty("4. close")
   private Double close;
+  @JsonProperty("2. high")
   private Double high;
+  @JsonProperty("3. low")
   private Double low;
   private LocalDate date;
 

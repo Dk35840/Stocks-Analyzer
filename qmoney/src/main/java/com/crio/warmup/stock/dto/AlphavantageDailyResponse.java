@@ -20,4 +20,9 @@ public class AlphavantageDailyResponse {
       Map<LocalDate, AlphavantageCandle> candles) {
     this.candles = candles;
   }
+
+  @Override
+  public String toString() {
+    return "AlphavantageDailyResponse [candles=" + candles + "]";
+  }
 }

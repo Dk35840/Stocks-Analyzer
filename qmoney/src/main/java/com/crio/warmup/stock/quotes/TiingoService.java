@@ -9,11 +9,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 public class TiingoService implements StockQuotesService {
 
 
+ 
   private RestTemplate restTemplate;
 
   protected TiingoService(RestTemplate restTemplate) {
@@ -22,14 +25,21 @@ public class TiingoService implements StockQuotesService {
 
   @Override
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException {
+   
     if(from.isAfter(to)) throw new RuntimeException();
 
     String url=buildUri(symbol, from, to);
 
-    Candle[] stocks =restTemplate.getForObject(url, Candle[].class);
-
+   
+    String stocksString =restTemplate.getForObject(url, String.class);
+    ObjectMapper objectMapper = new ObjectMapper();
     
+    TiingoCandle[] stocks =objectMapper.readValue(stocksString, TiingoCandle[].class);
+
+  
+
     return Arrays.asList(stocks);
+
   }
 
   protected String buildUri(String symbol, LocalDate startDate, LocalDate endDate) {
