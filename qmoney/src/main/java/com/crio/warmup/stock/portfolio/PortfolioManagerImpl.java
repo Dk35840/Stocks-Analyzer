@@ -86,14 +86,7 @@ private Comparator<AnnualizedReturn> getComparator() {
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
       throws JsonProcessingException {
 
-        if(from.isAfter(to)) throw new RuntimeException();
-
-        String url=buildUri(symbol, from, to);
-
-        Candle[] stocks =restTemplate.getForObject(url, Candle[].class);
-
-        
-     return Arrays.asList(stocks);
+      return stockQuoteService.getStockQuote(symbol, from, to);
   }
 
   protected String buildUri(String symbol, LocalDate startDate, LocalDate endDate) {

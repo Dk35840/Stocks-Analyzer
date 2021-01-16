@@ -26,19 +26,24 @@ import org.springframework.web.client.RestTemplate;
 
 public class AlphavantageService implements StockQuotesService {
 
-  @Autowired
+ 
   private RestTemplate restTemplate;
   
-  @Override
+  public AlphavantageService(RestTemplate restTemplate2) {
+  this.restTemplate=restTemplate2;
+}
+
+
+@Override
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException {
    
     if(from.isAfter(to)) throw new RuntimeException();
 
     String url=buildUri(symbol);
-
-    
+    List<Candle> li= new ArrayList<>();
+  
     AlphavantageDailyResponse stocks =restTemplate.getForObject(url, AlphavantageDailyResponse.class);
-   
+    System.out.println(stocks);
     for(Map.Entry<LocalDate, AlphavantageCandle> ac: stocks.getCandles().entrySet()){
 
       if(ac.getKey().isAfter(from) && ac.getKey().isBefore(to) || ac.getKey().isEqual(to)){
@@ -48,7 +53,7 @@ public class AlphavantageService implements StockQuotesService {
           
    }
 
-   System.out.print(li);
+   System.out.print("FDSFD"+li);
  
    
        return li;
@@ -56,7 +61,7 @@ public class AlphavantageService implements StockQuotesService {
 
     
 
-    List<Candle> li= new ArrayList<>();
+    
     
   
   /*
@@ -73,9 +78,9 @@ public class AlphavantageService implements StockQuotesService {
 
   protected String buildUri(String symbol) {
 
-    String apiKey="demo";
+    String apiKey="0H5ZYX722SENYD0J";
     StringBuilder sb= new StringBuilder("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=");
-    sb.append(symbol).append("&outputsize=full&apikey=apiKey");
+    sb.append(symbol).append("&outputsize=full&apikey=").append(apiKey);
 
             return sb.toString();
   }
