@@ -4,7 +4,10 @@ package com.crio.warmup.stock.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TiingoCandle implements Candle {
@@ -13,7 +16,8 @@ public class TiingoCandle implements Candle {
   private Double close;
   private Double high;
   private Double low;
-  private LocalDate date;
+ 
+  private Date privatedate;
 
   @Override
   public Double getOpen() {
@@ -51,14 +55,7 @@ public class TiingoCandle implements Candle {
     this.low = low;
   }
 
-  @Override
-  public LocalDate getDate() {
-    return date;
-  }
 
-  public void setDate(LocalDate timeStamp) {
-    this.date = timeStamp;
-  }
 
   @Override
   public String toString() {
@@ -67,7 +64,22 @@ public class TiingoCandle implements Candle {
             + ", close=" + close
             + ", high=" + high
             + ", low=" + low
-            + ", date=" + date
+           
             + '}';
+  }
+
+  public Date getPrivatedate() {
+    return privatedate;
+  }
+
+  public void setPrivatedate(Date privatedate) {
+    this.privatedate = privatedate;
+  }
+
+  @Override
+  public LocalDate getDate() {
+   return privatedate.toInstant().atZone(ZoneId.systemDefault())
+   .toLocalDate();
+   
   }
 }

@@ -68,8 +68,10 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
 
   public PortfolioManagerImpl(String provider, RestTemplate restTemplate2) {
+      
+    this.restTemplate=restTemplate2;
 
-  }
+   }
 private Comparator<AnnualizedReturn> getComparator() {
     return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
   }
