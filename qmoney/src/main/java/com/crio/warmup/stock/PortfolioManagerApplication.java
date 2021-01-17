@@ -51,6 +51,7 @@ public class PortfolioManagerApplication {
   //    2. Extract stock symbols from the json file with ObjectMapper provided by #getObjectMapper.
   //    3. Return the list of all symbols in the same order as provided in json.
 
+  
   //  Note:
   //  1. There can be few unused imports, you will need to fix them to make the build pass.
   //  2. You can use "./gradlew build" to check if your code builds successfully.
