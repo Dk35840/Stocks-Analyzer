@@ -51,7 +51,7 @@ public class PortfolioManagerApplication {
   //    2. Extract stock symbols from the json file with ObjectMapper provided by #getObjectMapper.
   //    3. Return the list of all symbols in the same order as provided in json.
 
-  
+
   //  Note:
   //  1. There can be few unused imports, you will need to fix them to make the build pass.
   //  2. You can use "./gradlew build" to check if your code builds successfully.
@@ -207,8 +207,6 @@ public class PortfolioManagerApplication {
       PortfolioTrade trade, Double buyPrice, Double sellPrice) {
 
         if(endDate.isBefore(trade.getPurchaseDate())) throw new NullPointerException();
-        
-       Period period=Period.between(trade.getPurchaseDate(), endDate);
       
         double totalReturns=(sellPrice-buyPrice)*1.0/buyPrice;
      
@@ -339,7 +337,7 @@ public void setClose(Double close) {
 
 Candle(){}
 
-public Candle(String date, Double close,Double Open, String symbol) {
+public Candle(String date, Double close,Double open, String symbol) {
   this.date = date;
   this.close = close;
   this.symbol = symbol;
