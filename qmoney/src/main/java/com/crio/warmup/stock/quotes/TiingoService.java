@@ -40,9 +40,9 @@ public class TiingoService implements StockQuotesService {
     ObjectMapper objectMapper = new ObjectMapper();
     
     stocks =objectMapper.readValue(stocksString, TiingoCandle[].class);
-      System.out.println(stocks);
+     // System.out.println(stocks);
     }catch(Exception e){
-      throw new StockQuoteServiceException ("Error");
+      throw new StockQuoteServiceException (e.getMessage());
       }
     
 

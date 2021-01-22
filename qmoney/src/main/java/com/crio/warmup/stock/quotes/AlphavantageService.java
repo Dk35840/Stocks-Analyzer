@@ -37,6 +37,9 @@ public class AlphavantageService implements StockQuotesService {
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException,
       StockQuoteServiceException {
    
+       // String response = restTemplate.getForObject(buildUri(symbol), String.class);
+        //System.out.println(response);
+
     if(from.isAfter(to)) throw new RuntimeException();
 
     List<Candle> li= new ArrayList<>();
@@ -51,16 +54,16 @@ public class AlphavantageService implements StockQuotesService {
 
       if(ac.getKey().isAfter(from) && ac.getKey().isBefore(to) || ac.getKey().isEqual(to)){
           ac.getValue().setDate(ac.getKey());
-        li.add(0,ac.getValue());
+          li.add(0,ac.getValue());
       }
           
    }
   }catch(Exception e){
-    throw new StockQuoteServiceException ("Error");
+    throw new StockQuoteServiceException (e.getMessage());
     }
 
 
- 
+   
    
        return li;
     }

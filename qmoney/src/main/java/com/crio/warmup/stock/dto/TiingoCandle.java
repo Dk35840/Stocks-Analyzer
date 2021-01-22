@@ -2,7 +2,8 @@
 package com.crio.warmup.stock.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.time.LocalDate;
+import java.time.*;
+import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TiingoCandle implements Candle {
@@ -55,8 +56,11 @@ public class TiingoCandle implements Candle {
   }
 
  
-  public void setDate(LocalDate timeStamp) {
-    this.date = timeStamp;
+  public void setDate(Date timeStamp) {
+    
+    this.date = timeStamp.toInstant()
+    .atZone(ZoneId.systemDefault())
+    .toLocalDate();;
   }
 
   @Override
