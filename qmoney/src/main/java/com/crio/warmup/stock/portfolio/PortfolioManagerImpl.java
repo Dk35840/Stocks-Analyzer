@@ -8,6 +8,7 @@ import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
 import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -72,9 +76,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
     this.restTemplate=restTemplate2;
 
    }
-private Comparator<AnnualizedReturn> getComparator() {
-    return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
-  }
+
 
   //CHECKSTYLE:OFF
 
@@ -84,7 +86,7 @@ private Comparator<AnnualizedReturn> getComparator() {
 
 
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
-      throws JsonProcessingException {
+      throws JsonProcessingException, StockQuoteServiceException {
 
       return stockQuoteService.getStockQuote(symbol, from, to);
   }
@@ -99,7 +101,8 @@ private Comparator<AnnualizedReturn> getComparator() {
   }
 
   @Override
-  public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades, LocalDate endDate) {
+  public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades, LocalDate endDate)
+      throws StockQuoteServiceException {
   
     List<AnnualizedReturn> returnList= new ArrayList<>();
 
@@ -125,7 +128,8 @@ private Comparator<AnnualizedReturn> getComparator() {
     return returnList;
   }
 
-  public AnnualizedReturn getAnnualizedReturn(PortfolioTrade trade,LocalDate endDate) throws JsonProcessingException {
+  public AnnualizedReturn getAnnualizedReturn(PortfolioTrade trade,LocalDate endDate) throws JsonProcessingException,
+      StockQuoteServiceException {
 
   
     if(endDate.isBefore(trade.getPurchaseDate()))  throw new RuntimeException();
@@ -151,5 +155,12 @@ private Comparator<AnnualizedReturn> getComparator() {
   //  stockQuoteService provided via newly added constructor of the class.
   //  You also have a liberty to completely get rid of that function itself, however, make sure
   //  that you do not delete the #getStockQuote function.
+
+  private Comparator<AnnualizedReturn> getComparator() {
+    return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
+  }
+
+
+
 
 }

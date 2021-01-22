@@ -23,6 +23,7 @@ public enum StockQuoteServiceFactory {
   //  ./gradlew test --tests StockQuoteServiceFactory
 
   public static StockQuotesService getService(String provider,  RestTemplate restTemplate) {
+    
     if(provider.equals("Tiingo") ||provider.equals("tiingo")) return new TiingoService(restTemplate);
     
      else return new AlphavantageService(restTemplate);
