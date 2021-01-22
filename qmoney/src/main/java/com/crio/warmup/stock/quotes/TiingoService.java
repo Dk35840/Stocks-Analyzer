@@ -33,11 +33,14 @@ public class TiingoService implements StockQuotesService {
     String url=buildUri(symbol, from, to);
 
     TiingoCandle[] stocks;
+
    try{ 
+
     String stocksString =restTemplate.getForObject(url, String.class);
     ObjectMapper objectMapper = new ObjectMapper();
     
     stocks =objectMapper.readValue(stocksString, TiingoCandle[].class);
+      System.out.println(stocks);
     }catch(Exception e){
       throw new StockQuoteServiceException ("Error");
       }

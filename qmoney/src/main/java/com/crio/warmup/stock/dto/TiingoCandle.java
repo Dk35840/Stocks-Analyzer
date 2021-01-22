@@ -54,6 +54,7 @@ public class TiingoCandle implements Candle {
     return date;
   }
 
+ 
   public void setDate(LocalDate timeStamp) {
     this.date = timeStamp;
   }
