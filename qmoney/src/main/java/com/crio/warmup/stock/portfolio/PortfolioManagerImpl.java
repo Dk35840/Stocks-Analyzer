@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -165,22 +166,29 @@ public class PortfolioManagerImpl implements PortfolioManager {
       LocalDate endDate, int numThreads) throws InterruptedException, StockQuoteServiceException {
 
 
+        int size=portfolioTrades.size();
+        
+        ExecutorService es = Executors.newFixedThreadPool(size); 
     
         List<AnnualizedReturn> returnList= new ArrayList<>();
+       
+
 
         for(PortfolioTrade trade:portfolioTrades){
     
          
+           Future<AnnualizedReturn> furture= es.submit(new ExecuteThread(trade,endDate) );
+
           
-          AnnualizedReturn ar=null;
-          try {
-            ar = getAnnualizedReturn(trade, endDate);
-          } catch (JsonProcessingException e) {
-           
-            e.printStackTrace();
-          }
+         
     
-           returnList.add(ar);
+           try {
+             returnList.add(furture.get());
+           } catch (ExecutionException e) {
+             // TODO Auto-generated catch block
+             e.printStackTrace();
+           }
+           
         }
     
           Collections.sort(returnList,getComparator());
@@ -189,7 +197,33 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   }
 
+  
+class ExecuteThread implements Callable<AnnualizedReturn>{
+
+  PortfolioTrade trade;
+  LocalDate endDate;
+  AnnualizedReturn ar=null;
+  ExecuteThread(PortfolioTrade trade,LocalDate endDate){
+    this.trade=trade;
+    this.endDate=endDate;
+  }
+ 
+
+  @Override
+  public AnnualizedReturn call() throws Exception {
+   
+
+    try {
+      ar = getAnnualizedReturn(trade, endDate);
+    } catch (Exception e) {
+     
+      e.printStackTrace();
+    }
 
 
+    return ar;
+  }
+  
+}
 
 }
