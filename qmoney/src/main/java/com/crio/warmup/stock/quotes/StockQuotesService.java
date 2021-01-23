@@ -7,17 +7,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface StockQuotesService  {
+public interface StockQuotesService {
 
 
-  // TODO: CRIO_TASK_MODULE_EXCEPTIONS
-  //  Change the method signature to throw StockQuoteServiceException
 
-  //CHECKSTYLE:OFF
   List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
       throws JsonProcessingException
       , StockQuoteServiceException
   ;
-  //CHECKSTYLE:ON
 
 }

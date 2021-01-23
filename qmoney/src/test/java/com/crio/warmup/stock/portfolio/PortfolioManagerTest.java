@@ -83,10 +83,10 @@ class PortfolioManagerTest {
   public void calculateExtrapolatedAnnualizedReturn()
       throws Exception {
     //given
-    String moduleToRun = null;
+    String moduleToRun = "REFACTOR";
 
 
-    if (moduleToRun.equals("REFACTOR")) {
+    if (moduleToRun.equals("ADDITIONAL_REFACTOR")) {
       Mockito.doReturn(getCandles(aaplQuotes))
           .when(portfolioManager).getStockQuote(eq("AAPL"), any(), any());
       Mockito.doReturn(getCandles(msftQuotes))

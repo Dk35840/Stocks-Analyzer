@@ -121,9 +121,9 @@ public class PortfolioManagerImpl implements PortfolioManager {
        returnList.add(ar);
     }
      
-      Comparator<AnnualizedReturn> comparator=Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
+     
 
-      Collections.sort(returnList,comparator);
+      Collections.sort(returnList,getComparator());
 
     return returnList;
   }
@@ -158,6 +158,35 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   private Comparator<AnnualizedReturn> getComparator() {
     return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
+  }
+
+  @Override
+  public List<AnnualizedReturn> calculateAnnualizedReturnParallel(List<PortfolioTrade> portfolioTrades,
+      LocalDate endDate, int numThreads) throws InterruptedException, StockQuoteServiceException {
+
+
+    
+        List<AnnualizedReturn> returnList= new ArrayList<>();
+
+        for(PortfolioTrade trade:portfolioTrades){
+    
+         
+          
+          AnnualizedReturn ar=null;
+          try {
+            ar = getAnnualizedReturn(trade, endDate);
+          } catch (JsonProcessingException e) {
+           
+            e.printStackTrace();
+          }
+    
+           returnList.add(ar);
+        }
+    
+          Collections.sort(returnList,getComparator());
+    
+        return returnList;
+
   }
 
 
