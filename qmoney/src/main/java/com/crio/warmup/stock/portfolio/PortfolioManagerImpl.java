@@ -178,6 +178,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
     
          
           futures.add(es.submit(new ExecuteThread(trade,endDate) ));
+          
         }
 
         for(Future<AnnualizedReturn> future: futures){
@@ -209,12 +210,12 @@ class ExecuteThread implements Callable<AnnualizedReturn>{
  
 
   @Override
-  public AnnualizedReturn call() throws Exception {
+  public AnnualizedReturn call() throws StockQuoteServiceException, JsonProcessingException {
     try {
       ar = getAnnualizedReturn(trade, endDate);
-    } catch (Exception e) {
+    } catch (StockQuoteServiceException  e) {
      
-      e.printStackTrace();
+      throw new StockQuoteServiceException("Annualised Return call throw");
     }
 
     return ar;
