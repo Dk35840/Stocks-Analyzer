@@ -186,7 +186,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
              returnList.add(future.get());
            } catch (ExecutionException e) {
             
-             e.printStackTrace();
+            throw new StockQuoteServiceException("calculateAnnualizedReturnParallel call throws");
            }
            
         }
