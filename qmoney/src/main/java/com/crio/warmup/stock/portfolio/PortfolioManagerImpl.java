@@ -168,24 +168,19 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
         int size=portfolioTrades.size();
         
-        ExecutorService es = Executors.newFixedThreadPool(size); 
+        ExecutorService es = Executors.newFixedThreadPool(10); 
     
         List<AnnualizedReturn> returnList= new ArrayList<>();
-       
-
 
         for(PortfolioTrade trade:portfolioTrades){
     
          
            Future<AnnualizedReturn> furture= es.submit(new ExecuteThread(trade,endDate) );
 
-          
-         
-    
            try {
              returnList.add(furture.get());
            } catch (ExecutionException e) {
-             // TODO Auto-generated catch block
+            
              e.printStackTrace();
            }
            
@@ -211,15 +206,12 @@ class ExecuteThread implements Callable<AnnualizedReturn>{
 
   @Override
   public AnnualizedReturn call() throws Exception {
-   
-
     try {
       ar = getAnnualizedReturn(trade, endDate);
     } catch (Exception e) {
      
       e.printStackTrace();
     }
-
 
     return ar;
   }
