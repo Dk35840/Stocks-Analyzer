@@ -166,19 +166,23 @@ public class PortfolioManagerImpl implements PortfolioManager {
       LocalDate endDate, int numThreads) throws InterruptedException, StockQuoteServiceException {
 
 
-        int size=portfolioTrades.size();
+       // int size=portfolioTrades.size();
         
-        ExecutorService es = Executors.newFixedThreadPool(10); 
+        ExecutorService es = Executors.newFixedThreadPool(5); 
     
         List<AnnualizedReturn> returnList= new ArrayList<>();
+
+        List<Future<AnnualizedReturn>> futures= new ArrayList<>();
 
         for(PortfolioTrade trade:portfolioTrades){
     
          
-           Future<AnnualizedReturn> furture= es.submit(new ExecuteThread(trade,endDate) );
+          futures.add(es.submit(new ExecuteThread(trade,endDate) ));
+        }
 
+        for(Future<AnnualizedReturn> future: futures){
            try {
-             returnList.add(furture.get());
+             returnList.add(future.get());
            } catch (ExecutionException e) {
             
              e.printStackTrace();
